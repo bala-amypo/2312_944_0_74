@@ -3,41 +3,42 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.entity.StudentEntity;
-import com.example.demo.service.Studentservice;
+import com.example.demo.service.StudentService;  // Correct import
 
 @RestController
+@RequestMapping("/students")
 public class StudentController {
+
     @Autowired
-    Studentservice src;
-    @PostMapping("/post")
-    public StudentEntity postdata(@RequestBody StudentEntity st){
-        return src.savedata(st);
+    private StudentService src;
+
+    @PostMapping
+    public StudentEntity postdata(@RequestBody StudentEntity st) {
+        return src.insertStudent(st);
     }
-    @GetMapping("/get")
-    public List<StudentEntity> getdata(){
-        return src.retdata();
+
+    @GetMapping
+    public List<StudentEntity> getdata() {
+        return src.getAllStudents();
     }
-    @GetMapping("/getid/{id}")
-    public StudentEntity getid(@PathVariable int id){
-        return src.id(id);
+
+    @GetMapping("/{id}")
+    public StudentEntity getid(@PathVariable Long id) {
+        return src.getOneStudent(id).orElse(null);
     }
-    @PutMapping("/put/{id}")
-    public StudentEntity putdata(@PathVariable int id,@RequestBody StudentEntity st){
-        return src.savedata(st);
+
+    @PutMapping("/{id}")
+    public StudentEntity putdata(@PathVariable Long id, @RequestBody StudentEntity st) {
+        st.setId(id); // update id on entity before saving
+        return src.insertStudent(st);
     }
-    @DeleteMapping("/delete/{id}")
-    public String deletedata(@PathVariable int id){
-        src.remove(id);
-        return "deleted";
+
+    @DeleteMapping("/{id}")
+    public String deletedata(@PathVariable Long id) {
+        src.deleteStudent(id);
+        return "Deleted student with id: " + id;
     }
-    
 }
