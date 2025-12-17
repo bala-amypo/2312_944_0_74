@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank
 public class NewfileEntity{
     @Id
     privata Long id;
-    
+    @NotBlank(message="should not contain spaces")
     privata String name;
     privata String email;
 }
